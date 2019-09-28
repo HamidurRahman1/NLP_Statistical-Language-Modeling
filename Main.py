@@ -17,19 +17,9 @@ btr = PreProcess(RF_B_Tr)
 bts = PreProcess(RF_B_Ts, btr)
 lts = PreProcess(RF_L_Ts, btr)
 
-# uni_btr = Unigram(btr)
-# bi_btr = Bigram(btr)
-# bis_btr = BigramSmoothing(btr)
-#
-# uni_bts = Unigram(btr)
-# bi_bts = Bigram(btr)
-# bis_bts = BigramSmoothing(btr)
-#
-# uni_lts = Unigram(btr)
-# bi_lts = Bigram(btr)
-# bis_lts = BigramSmoothing(btr)
-#
-#
+uni = Unigram(btr)
+bi = Bigram(btr)
+bis = BigramSmoothing(btr)
 
 print(btr.filename)
 
