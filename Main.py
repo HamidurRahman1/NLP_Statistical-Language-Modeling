@@ -19,19 +19,7 @@ lts = PreProcess(RF_L_Ts, btr)
 
 uni = Unigram(btr)
 bi = Bigram(btr)
-bis = BigramSmoothing(btr)
+# bis = BigramSmoothing(btr)
 
-print(btr.filename)
-
-
-
-
-
-
-
-# qa1(btr)
-# qa2(btr)
-# qa3(btr, bts, lts)
-# qa4(bi)
-
+print(len(uni.ungTokenMap))
 
