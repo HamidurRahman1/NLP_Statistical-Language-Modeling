@@ -86,8 +86,7 @@ def replaceAndPaddTraining(lines, initialMap):
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        newLine += ""
-        padded.append(newLine)
+        padded.append(newLine.rstrip().lstrip())
     return padded
 
 
@@ -104,8 +103,7 @@ def replaceAndPaddTest(lines, trainingWordMap):
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        newLine += ""
-        padded.append(newLine)
+        padded.append(newLine.lstrip().rstrip())
     return padded
 
 
