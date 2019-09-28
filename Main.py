@@ -17,6 +17,10 @@ btr = PreProcess(RF_B_Tr)
 bts = PreProcess(RF_B_Ts, btr)
 lts = PreProcess(RF_L_Ts, btr)
 
+ung = Unigram(btr)
+bi = Bigram(btr)
+bis = BigramSmoothing(btr)
+
 qa1(btr)
 qa2(btr)
 

@@ -43,12 +43,12 @@ class Unigram:
         probability under this model"""
 
     def __init__(self, pre, smoothing=False):
-        self.ungTokenMap = pre.replacedTokensMap
-        self.ungTotalToken = pre.replacedTotalTokens
-        self.ungUniqueToken = pre.replacedUniqueTokens
+        self.ungTokenMap = pre.replacedTokenMap
+        self.ungTotalToken = pre.replacedTotalToken
+        self.ungUniqueToken = pre.replacedUniqueToken
         self.ungProbabilityMap = dict()
         if smoothing:
-            for token in self.ungUniqueToken.keys():
+            for token in self.ungTokenMap.keys():
                 self.ungProbabilityMap[token] = (self.ungTokenMap.get(token, 0)+1)/(self.ungUniqueToken+self.ungTotalToken)
         else:
             for token in self.ungTokenMap.keys():
@@ -75,7 +75,7 @@ class Bigram(Unigram):
 
     def __init__(self, pre):
         Unigram.__init__(self, pre)
-        self.biTokenMap = makeBigramMap(pre.replacedPaddedLines)
+        self.biTokenMap = makeBigramMap(pre.replacedLines)
 
     def calBiWordProb(self, previousWord, word):
         top = self.biTokenMap.get((previousWord, word), 0)
@@ -97,7 +97,7 @@ class Bigram(Unigram):
 class BigramSmoothing(Unigram):
     def __init__(self, pre):
         Unigram.__init__(self, pre, True)
-        self.bisTokensMap = makeBigramMap(pre.replacedPaddedLines)
+        self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
     def calBisWordProb(self, previousWord, word):
         top = self.bisTokensMap.get((previousWord, word), 0) + 1
