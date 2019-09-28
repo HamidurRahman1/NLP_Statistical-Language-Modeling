@@ -5,11 +5,11 @@ t = "\t\t"
 
 
 def qa1(btr):
-    print("Ans #1: unique tokens in original training file with <s>, </s> and <unk> :", btr.initialUniqueTokens+3)
+    print("Ans #1: unique tokens in training file with <s>, </s> and <unk> :", btr.actualUniqueToken)
 
 
 def qa2(btr):
-    print("Ans #2: total tokens in original training file with :", btr.initialTotalTokens)
+    print("Ans #2: total tokens in training file with :", btr.actualTotalToken)
 
 
 def qa3(btr, bts, lts):

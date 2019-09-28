@@ -15,12 +15,21 @@ def getDataFromFile(filePath):
     """:returns a list of all lines from the given file_path"""
 
     file = open(filePath)
-    lines  = file.readlines()
+    lines = file.readlines()
     stripped = list()
     for line in lines:
-        stripped.append(line.rstrip())
+        stripped.append(START + " " + line.rstrip().lower() + " " + END)
     file.close()
     return stripped
+
+
+def padLines(lines):
+    i = 0
+    for line in lines:
+        line = START + " " + line + " " + END
+        lines[i] = line
+        i += 1
+    return lines
 
 
 def lowerAll(lines):
@@ -70,33 +79,33 @@ def replaceAndPaddTraining(lines, initialMap):
 
     padded = list()
     for line in lines:
-        newLine = START + " "
+        newLine = ""
         words = line.split()
         for word in words:
             if initialMap[word] == 1:
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        newLine += END
+        newLine += ""
         padded.append(newLine)
     return padded
 
 
-def replaceAndPaddTest(trainingWordMap, lines):
+def replaceAndPaddTest(lines, trainingWordMap):
     """givens a dictionary and lines, pad each line with <s> </s> and replace all words with
         <unk> if that did not occur in the map and returns a new list of lines"""
 
     padded = list()
     for line in lines:
-        l = START + " "
+        newLine = ""
         words = line.split()
         for word in words:
             if word not in trainingWordMap.keys():
-                l += UNK + " "
+                newLine += UNK + " "
             else:
-                l += word + " "
-        l += END
-        padded.append(l)
+                newLine += word + " "
+        newLine += ""
+        padded.append(newLine)
     return padded
 
 
@@ -140,11 +149,3 @@ def makeBigramMap(lines):
             if previousWord == END:
                 end = True
     return biMap
-
-#
-# lines  = getDataFromFile("t.txt")
-# bg = makeBigramMap(lines)
-# print(lines)
-# print(len(bg.keys()))
-# print(bg.keys())
-

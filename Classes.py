@@ -3,7 +3,6 @@ from Util import getDataFromFile
 from Util import makeBigramMap
 from Util import makeWords
 from Util import countWords
-from Util import lowerAll
 from Util import replaceAndPaddTest
 from Util import replaceAndPaddTraining
 from Util import writeToFile
@@ -17,25 +16,26 @@ class PreProcess:
     """PreProcess a file, pad tags, lower lines, count words, replace (depends on other PreProcess object finally write
     to a file"""
 
-    def __init__(self, filename, other = None):
+    def __init__(self, filename, other=None):
         self.filename = filename
-        self.initialLines = getDataFromFile(self.filename)
-        self.initialTokensMap = countWords(makeWords(self.initialLines))
-        self.initialTotalTokens = sum(self.initialTokensMap.values())
-        self.initialUniqueTokens = len(self.initialTokensMap.keys())
-        self.loweredActualLines = lowerAll(self.initialLines)
-        self.loweredTokensMap = countWords(makeWords(self.loweredActualLines))
-        self.loweredTotalTokens = sum(self.loweredTokensMap.values())
-        self.loweredUniqueTokens = len(self.loweredTokensMap.keys())
+        # self.initialLines = getDataFromFile(self.filename)
+        # self.paddedLines = padLines(self.initialLines)
+        # self.initialTokensMap = countWords(makeWords(self.initialLines))
+        # self.initialTotalTokens = sum(self.initialTokensMap.values())
+        # self.initialUniqueTokens = len(self.initialTokensMap.keys())
+        self.actualLines = getDataFromFile(self.filename)
+        self.actualTokenMap = countWords(makeWords(self.actualLines))
+        self.actualTotalToken = sum(self.actualTokenMap.values())
+        self.actualUniqueToken = len(self.actualTokenMap.keys())
         if other is None:
-            self.replacedPaddedLines = replaceAndPaddTraining(self.loweredActualLines, self.loweredTokensMap)
+            self.replacedLines = replaceAndPaddTraining(self.actualLines, self.actualTokenMap)
         else:
-            self.replacedPaddedLines = replaceAndPaddTest(other.replacedTokensMap, self.loweredActualLines)
-        self.replacedTokensMap = countWords(makeWords(self.replacedPaddedLines))
-        self.replacedTotalTokens = sum(self.replacedTokensMap.values())
-        self.replacedUniqueTokens = len(self.replacedTokensMap.keys())
+            self.replacedLines = replaceAndPaddTest(self.actualLines, other.replacedTokenMap)
+        self.replacedTokenMap = countWords(makeWords(self.replacedLines))
+        self.replacedTotalToken = sum(self.replacedTokenMap.values())
+        self.replacedUniqueToken = len(self.replacedTokenMap.keys())
         self.modifiedFilename = M + self.filename
-        writeToFile(self.modifiedFilename, self.replacedPaddedLines)
+        writeToFile(self.modifiedFilename, self.replacedLines)
 
 
 class Unigram:

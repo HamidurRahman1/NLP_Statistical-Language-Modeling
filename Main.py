@@ -17,9 +17,6 @@ btr = PreProcess(RF_B_Tr)
 bts = PreProcess(RF_B_Ts, btr)
 lts = PreProcess(RF_L_Ts, btr)
 
-uni = Unigram(btr)
-bi = Bigram(btr)
-# bis = BigramSmoothing(btr)
-
-print(len(uni.ungTokenMap))
+qa1(btr)
+qa2(btr)
 
