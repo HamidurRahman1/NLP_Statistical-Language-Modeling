@@ -1,4 +1,5 @@
 
+
 from Util import getDataFromFile
 from Util import makeBigramMap
 from Util import makeWords
@@ -37,17 +38,13 @@ class Unigram:
     """ counting padding and unk as a token and map them to a dictionary keys and have value as their
         probability under this model"""
 
-    def __init__(self, pre, smoothing=False):
+    def __init__(self, pre):
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
         self.ungProbabilityMap = dict()
-        if smoothing:
-            for token in self.ungTokenMap.keys():
-                self.ungProbabilityMap[token] = (self.ungTokenMap.get(token, 0)+1)/(self.ungUniqueToken+self.ungTotalToken)
-        else:
-            for token in self.ungTokenMap.keys():
-                self.ungProbabilityMap[token] = self.calUngWordProb(token)
+        for token in self.ungTokenMap.keys():
+            self.ungProbabilityMap[token] = self.calUngWordProb(token)
 
     def calUngWordProb(self, word):
         """:returns probability of the given word"""
@@ -57,11 +54,12 @@ class Unigram:
     def calUniSentProb(self, sentence):
         """:returns the probability of a given sentence"""
 
-        prob = 1
+        totalProb = 1
         words = (START + " " + sentence + " " + END).lower().split()
         for word in words:
-            prob *= self.ungProbabilityMap.get(word, 0)
-        return prob
+            wordProb = self.calUngWordProb(word)
+            totalProb *= wordProb
+        return totalProb
 
 
 class Bigram(Unigram):
@@ -75,38 +73,42 @@ class Bigram(Unigram):
     def calBiWordProb(self, previousWord, word):
         top = self.biTokenMap.get((previousWord, word), 0)
         bottom = self.ungTokenMap.get(previousWord, 0)
-        return top/bottom
+        if top == 0 or bottom == 0:
+            return 0.0
+        else:
+            return top/bottom
 
     def calBiSentProb(self, sentence):
-        prob = 0
+        totalProb = 1
         words = (START + " " + sentence + " " + END).lower().split()
         j = 1
         for i in range(len(words)-1):
             w1 = words[i]
             w2 = words[j]
             j += 1
-            prob += self.calBiWordProb(w1, w2)
-        return prob
+            wordProb = self.calBiWordProb(w1, w2)
+            totalProb *= wordProb
+        return totalProb
 
 
 class BigramSmoothing(Unigram):
     def __init__(self, pre):
-        Unigram.__init__(self, pre, True)
+        Unigram.__init__(self, pre)
         self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
     def calBisWordProb(self, previousWord, word):
         top = self.bisTokensMap.get((previousWord, word), 0) + 1
-        bottom = self.ungTokenMap[previousWord] + len(self.bisTokensMap.keys())
+        bottom = self.ungTokenMap.get(previousWord, 0) + len(self.ungTokenMap)
         return top/bottom
 
     def calBisSentProb(self, sentence):
-        prob = 0
+        prob = 1
         words = (START + " " + sentence + " " + END).lower().split()
         j = 1
         for i in range(len(words)-1):
             w1 = words[i]
             w2 = words[j]
             j += 1
-            prob += self.calBisWordProb(w1, w2)
+            prob *= self.calBisWordProb(w1, w2)
         return prob
 

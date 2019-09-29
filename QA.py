@@ -47,7 +47,7 @@ def qa5(uni, bi, bis):
     s1 = "He was laughed off the screen ."
     s2 = "There was no compulsion behind them ."
     s3 = "I look forward to hearing your reply ."
-    print("Ans #6: Log probabilities of below sentences under 3 models.")
+    print("Ans #5: Log probabilities of below sentences under 3 models.")
 
     print(t, s1, "-> Under Unigram: ", uni.calUniSentProb(s1))
     print(t, s1, "-> Under Bigram: ", bi.calBiSentProb(s1))
@@ -60,7 +60,6 @@ def qa5(uni, bi, bis):
     print(t, s3, "-> Under Unigram: ", uni.calUniSentProb(s3))
     print(t, s3, "-> Under Bigram: ", bi.calBiSentProb(s3))
     print(t, s3, "-> Under Bigram Smoothing: ", bis.calBisSentProb(s3))
-    print()
 
 
 def qa6():
