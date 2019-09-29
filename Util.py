@@ -1,10 +1,10 @@
 
-RF_B_Tr = "brown-train.txt"
-RF_B_Ts = "brown-test.txt"
-RF_L_Ts = "learner-test.txt"
+BROWN_TRAINING = "brown-train.txt"
+BROWN_TEST = "brown-test.txt"
+LEARNER_TEST = "learner-test.txt"
 
 # modified file indicator, will prepend with filename above
-M = "m-"
+MODIFIED = "m-"
 
 START = "<s>"
 END = "</s>"
@@ -46,7 +46,7 @@ def makeWords(lines):
 
     words = list()
     for line in lines:
-        splited  = line.split()
+        splited = line.split()
         filtered = list(filter(None, splited))
         words.extend(filtered)
     return words
@@ -151,3 +151,4 @@ def makeBigramMap(lines):
 
 def getPercentage(up, bottom):
     return (up/bottom)*100
+

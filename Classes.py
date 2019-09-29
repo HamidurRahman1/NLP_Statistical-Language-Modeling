@@ -1,4 +1,5 @@
 
+import math
 
 from Util import getDataFromFile
 from Util import makeBigramMap
@@ -8,7 +9,7 @@ from Util import replaceAndPaddTest
 from Util import replaceAndPaddTraining
 from Util import writeToFile
 
-from Util import M
+from Util import MODIFIED
 from Util import START
 from Util import END
 
@@ -30,7 +31,7 @@ class PreProcess:
         self.replacedTokenMap = countWords(makeWords(self.replacedLines))
         self.replacedTotalToken = sum(self.replacedTokenMap.values())
         self.replacedUniqueToken = len(self.replacedTokenMap.keys())
-        self.modifiedFilename = M + self.filename
+        self.modifiedFilename = MODIFIED + self.filename
         writeToFile(self.modifiedFilename, self.replacedLines)
 
 

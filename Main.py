@@ -10,16 +10,22 @@ from Classes import Unigram
 from Classes import Bigram
 from Classes import BigramSmoothing
 
-from Util import RF_B_Tr
-from Util import RF_B_Ts
-from Util import RF_L_Ts
+from Util import BROWN_TRAINING
+from Util import BROWN_TEST
+from Util import LEARNER_TEST
 
-btr = PreProcess(RF_B_Tr)
-bts = PreProcess(RF_B_Ts, btr)
-lts = PreProcess(RF_L_Ts, btr)
+brownTraining = PreProcess(BROWN_TRAINING)
+brownTest = PreProcess(BROWN_TEST, brownTraining)
+learnerTest = PreProcess(LEARNER_TEST, brownTraining)
 
-uni_btr = Unigram(btr)
-bi_btr = Bigram(btr)
-bis_btr = BigramSmoothing(btr)
+unigramBrownTraining = Unigram(brownTraining)
+bigramBrownTraining = Bigram(brownTraining)
+bigramSmoothingBrownTraining = BigramSmoothing(brownTraining)
 
-qa5(uni_btr, bi_btr, bis_btr)
+qa1(brownTraining)
+qa2(brownTraining)
+qa3(brownTraining, brownTest, learnerTest)
+qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest)
+
+
+
