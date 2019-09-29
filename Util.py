@@ -74,7 +74,7 @@ def countWords(words):
 
 
 def replaceAndPaddTraining(lines, initialMap):
-    """givens lines and a dictionary, pad each line with <s> </s> and replace all words with
+    """given lines and a dictionary, replace all words with
     <unk> if that has occurred only once in the map and returns a new list of lines"""
 
     padded = list()
@@ -91,7 +91,7 @@ def replaceAndPaddTraining(lines, initialMap):
 
 
 def replaceAndPaddTest(lines, trainingWordMap):
-    """givens a dictionary and lines, pad each line with <s> </s> and replace all words with
+    """givens a dictionary and lines, replace all words with
         <unk> if that did not occur in the map and returns a new list of lines"""
 
     padded = list()
@@ -147,3 +147,7 @@ def makeBigramMap(lines):
             if previousWord == END:
                 end = True
     return biMap
+
+
+def getPercentage(up, bottom):
+    return (up/bottom)*100

@@ -18,11 +18,6 @@ class PreProcess:
 
     def __init__(self, filename, other=None):
         self.filename = filename
-        # self.initialLines = getDataFromFile(self.filename)
-        # self.paddedLines = padLines(self.initialLines)
-        # self.initialTokensMap = countWords(makeWords(self.initialLines))
-        # self.initialTotalTokens = sum(self.initialTokensMap.values())
-        # self.initialUniqueTokens = len(self.initialTokensMap.keys())
         self.actualLines = getDataFromFile(self.filename)
         self.actualTokenMap = countWords(makeWords(self.actualLines))
         self.actualTotalToken = sum(self.actualTokenMap.values())
@@ -65,7 +60,7 @@ class Unigram:
         prob = 1
         words = (START + " " + sentence + " " + END).lower().split()
         for word in words:
-            prob *= self.ungProbabilityMap[word]
+            prob *= self.ungProbabilityMap.get(word, 0)
         return prob
 
 
@@ -79,7 +74,7 @@ class Bigram(Unigram):
 
     def calBiWordProb(self, previousWord, word):
         top = self.biTokenMap.get((previousWord, word), 0)
-        bottom = self.ungTokenMap[previousWord]
+        bottom = self.ungTokenMap.get(previousWord, 0)
         return top/bottom
 
     def calBiSentProb(self, sentence):
