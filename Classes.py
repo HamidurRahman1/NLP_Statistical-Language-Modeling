@@ -12,6 +12,7 @@ from Util import writeToFile
 from Util import MODIFIED
 from Util import START
 from Util import END
+from Util import UNK
 
 
 class PreProcess:
@@ -43,10 +44,7 @@ class Unigram:
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
-        self.ungProbabilityMap = dict()
         self.smoothing = smoothing
-        for token in self.ungTokenMap.keys():
-            self.ungProbabilityMap[token] = self.calUngWordProb(token)
 
     def calUngWordProb(self, word):
         """:returns probability of the given word"""
@@ -68,6 +66,8 @@ class Unigram:
             words = (START + " " + sentence + " " + END).lower().split()
 
         for word in words:
+            if self.ungTokenMap.get(word, 0) == 0:
+                word = UNK
             wordProb = self.calUngWordProb(word)
             totalProb *= wordProb
         return totalProb
@@ -100,6 +100,10 @@ class Bigram(Unigram):
         for i in range(len(words)-1):
             w1 = words[i]
             w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
             j += 1
             wordProb = self.calBiWordProb(w1, w2)
             totalProb *= wordProb

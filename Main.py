@@ -29,6 +29,27 @@ unigramBrownTraining = Unigram(brownTraining)
 bigramBrownTraining = Bigram(brownTraining)
 bigramSmoothingBrownTraining = BigramSmoothing(brownTraining)
 
+qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
+
+# print(brownTest.)
+# print(brownTest.replacedUniqueToken)
+#
+# print(brownTest.replacedUniqueToken)
+# print(learnerTest.replacedUniqueToken)
+
+
+# s1 = "He was laughed off the screen ."
+# s2 = "There was no compulsion behind them ."
+# s3 = "I look forward to hearing your reply ."
+#
+# p1 = unigramBrownTraining.calUniSentProb(s1)
+# p2 = unigramBrownTraining.calUniSentProb(s2)
+# p3 = unigramBrownTraining.calUniSentProb(s3)
+# print(math.log(p1, 2))
+# print(p2)
+# print(math.log(p3, 2))
+
+#qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
 
 # unigramBrownTest = Unigram(brownTest)
 # bigramBrownTest = Bigram(brownTest)

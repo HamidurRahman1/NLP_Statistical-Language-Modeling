@@ -3,6 +3,7 @@ from Util import getNonMatching
 from Util import makeBigramMap
 from Util import getPercentage
 from Util import testFileProbabilityOfSentences
+from Util import returnLogProbability
 
 import math
 
@@ -50,17 +51,17 @@ def qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
     s3 = "I look forward to hearing your reply ."
     print("Ans #5: Log probabilities of below sentences under 3 models.")
 
-    print(t, s1, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s1))
-    print(t, s1, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s1))
-    print(t, s1, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s1))
+    print(t, s1, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s1)))
+    print(t, s1, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s1)))
+    print(t, s1, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s1)))
     print()
-    print(t, s2, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s2))
-    print(t, s2, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s2))
-    print(t, s2, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s2))
+    print(t, s2, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s2)))
+    print(t, s2, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s2)))
+    print(t, s2, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s2)))
     print()
-    print(t, s3, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s3))
-    print(t, s3, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s3))
-    print(t, s3, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s3))
+    print(t, s3, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s3)))
+    print(t, s3, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s3)))
+    print(t, s3, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s3)))
 
 
 def qa6():

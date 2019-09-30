@@ -1,4 +1,5 @@
 
+import math
 
 BROWN_TRAINING = "brown-train.txt"
 BROWN_TEST = "brown-test.txt"
@@ -168,3 +169,11 @@ def testFileProbabilityOfSentences(lines, modelObj, models):
         for line in lines:
             totalProbability *= modelObj.calBisSentProb(line, True)
         return totalProbability
+
+
+def returnLogProbability(probability):
+    if probability <= 0.0:
+        return 0.0
+    else:
+        return math.log(probability, 2)
+
