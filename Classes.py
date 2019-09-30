@@ -112,12 +112,12 @@ class Bigram(Unigram):
 
 class BigramSmoothing(Unigram):
     def __init__(self, pre):
-        Unigram.__init__(self, pre, True)
+        Unigram.__init__(self, pre)
         self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
     def calBisWordProb(self, previousWord, word):
         top = self.bisTokensMap.get((previousWord, word), 0) + 1
-        bottom = self.ungTokenMap.get(previousWord, 0) + len(self.ungTokenMap)
+        bottom = self.ungTokenMap.get(previousWord, 0) + self.ungUniqueToken
         return top/bottom
 
     def calBisSentProb(self, sentence, padded=False):
@@ -130,6 +130,10 @@ class BigramSmoothing(Unigram):
         for i in range(len(words)-1):
             w1 = words[i]
             w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
             j += 1
             prob *= self.calBisWordProb(w1, w2)
         return prob

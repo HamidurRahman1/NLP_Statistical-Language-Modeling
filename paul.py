@@ -35,6 +35,10 @@ def modifiy(oldMap, taggedLines):
     return lst
 
 
-updatedLines = read("brown-train.txt")
+updatedLines = read("brown-test.txt")
 upm = tokenize(updatedLines)
+
 print("Total tokens", sum(upm.values()))
+print("Uni", len(upm))
+
+

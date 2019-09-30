@@ -29,6 +29,7 @@ unigramBrownTraining = Unigram(brownTraining)
 bigramBrownTraining = Bigram(brownTraining)
 bigramSmoothingBrownTraining = BigramSmoothing(brownTraining)
 
+
 qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
 
 # print(brownTest.)
