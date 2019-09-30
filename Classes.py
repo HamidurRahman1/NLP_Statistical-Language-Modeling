@@ -92,6 +92,22 @@ class Unigram:
         p = math.pow(2, -(totalProb / len(words)))
         return p
 
+    def calUniSentPerplexityTest(self, sentence, padded=False):
+        """:returns the perplexity of a given sentence"""
+
+        totalProb = 0.0
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+        for word in words:
+            if self.ungTokenMap.get(word, 0) == 0:
+                word = UNK
+            wordProb = self.calUngWordProb(word)
+            wordLog = math.log(wordProb, 2)
+            totalProb += wordLog
+        return totalProb
+
 
 class Bigram(Unigram):
     """counting padding and unk as a token and map them to a dictionary keys and have value as
@@ -148,12 +164,37 @@ class Bigram(Unigram):
             wordProb = self.calBiWordProb(w1, w2)
             wordLog = 0.0
             if wordProb == 0.0:
-                wordLog = 0.0
+                return "undefined"
             else:
                 wordLog = math.log(wordProb, 2)
             totalProb += wordLog
         per = math.pow(2, -(totalProb/len(words)))
         return per
+
+    def calBiSentPerplexityTest(self, sentence, padded=False):
+
+        totalProb = 0.0
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+        j = 1
+        for i in range(len(words)-1):
+            w1 = words[i]
+            w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
+            j += 1
+            wordProb = self.calBiWordProb(w1, w2)
+            wordLog = 0.0
+            if wordProb == 0.0:
+                return "undefined"
+            else:
+                wordLog = math.log(wordProb, 2)
+            totalProb += wordLog
+        return totalProb
 
 
 class BigramSmoothing(Unigram):
@@ -185,7 +226,7 @@ class BigramSmoothing(Unigram):
         return prob
 
     def calBisSentPerplexity(self, sentence, padded=False):
-        prob = 1
+        prob = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -199,6 +240,37 @@ class BigramSmoothing(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            prob *= self.calBisWordProb(w1, w2)
+            wordProb = self.calBisWordProb(w1, w2)
+            wordLog = 0.0
+            if wordProb == 0.0:
+                return "undefined"
+            else:
+                wordLog = math.log(wordProb, 2)
+            prob += wordLog
+        per = math.pow(2, -(prob/len(words)))
+        return per
+
+    def calBisSentPerplexityTest(self, sentence, padded=False):
+        prob = 0.0
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+        j = 1
+        for i in range(len(words)-1):
+            w1 = words[i]
+            w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
+            j += 1
+            wordProb = self.calBisWordProb(w1, w2)
+            wordLog = 0.0
+            if wordProb == 0.0:
+                return "undefined"
+            else:
+                wordLog = math.log(wordProb, 2)
+            prob += wordLog
         return prob
 

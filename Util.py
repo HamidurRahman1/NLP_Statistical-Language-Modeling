@@ -177,3 +177,28 @@ def returnLogProbability(probability):
     else:
         return math.log(probability, 2)
 
+
+def allSentencesPerplexityUnderUnigram(lines, unigram, totalTokens):
+    probTotal = 0.0
+    for line in lines:
+        prob = unigram.calUniSentPerplexityTest(line, True)
+        probTotal += prob
+    return math.pow(2, -(probTotal/totalTokens))
+
+
+def allSentencesPerplexityUnderBigram(lines, bigram, totalTokens):
+    probTotal = 0.0
+    for line in lines:
+        prob = bigram.calBiSentPerplexityTest(line, True)
+        probTotal += prob
+    return math.pow(2, -(probTotal/totalTokens))
+
+
+def allSentencesPerplexityUnderBigramSmoothing(lines, bigramSmoothing, totalTokens):
+    probTotal = 0.0
+    for line in lines:
+        prob = bigramSmoothing.calBiSentPerplexityTest(line, True)
+        probTotal += prob
+    return math.pow(2, -(probTotal/totalTokens))
+
+

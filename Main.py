@@ -1,4 +1,5 @@
 
+import math
 
 from QA import qa1
 from QA import qa2
@@ -30,15 +31,13 @@ s1 = "He was laughed off the screen ."
 s2 = "There was no compulsion behind them ."
 s3 = "I look forward to hearing your reply ."
 
-# print(unigramBrownTraining.calUniSentPerplexity(s1))
-# print(unigramBrownTraining.calUniSentPerplexity(s2))
-# print(unigramBrownTraining.calUniSentPerplexity(s3))
+qa7(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining, brownTest, learnerTest)
 
-print(bigramBrownTraining.calBiSentPerplexity(s1))
+# i = 0
+# probTotal = 0
+# for line in brownTest.replacedLines:
+#     prob = unigramBrownTraining.calUniSentPerplexityTest(line, True)
+#     probTotal += prob
+# print(probTotal)
+# print(math.pow(2, -(probTotal/brownTest.replacedTotalToken)))
 
-# qa1(brownTraining)
-# qa2(brownTraining)
-# qa3(brownTraining, brownTest, learnerTest)
-# qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest)
-# qa5([s1, s2, s3], unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
-# qa6([s1, s2, s3], unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)

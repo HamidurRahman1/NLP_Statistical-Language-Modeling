@@ -2,7 +2,9 @@
 from Util import getNonMatching
 from Util import makeBigramMap
 from Util import getPercentage
-from Util import testFileProbabilityOfSentences
+from Util import allSentencesPerplexityUnderUnigram
+from Util import allSentencesPerplexityUnderBigram
+from Util import allSentencesPerplexityUnderBigramSmoothing
 from Util import returnLogProbability
 
 import math
@@ -70,42 +72,52 @@ def qa5(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBro
 def qa6(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
     print("Ans #6: Perplexity of below sentences under 3 models.")
 
-    print(t, sentences[0], "-> Under Unigram: ",
-          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[0])))
-    print(t, sentences[0], "-> Under Bigram: ",
-          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[0])))
+    print(t, sentences[0], "-> Under Unigram: ", unigramBrownTraining.calUniSentPerplexity(sentences[0]))
+    print(t, sentences[0], "-> Under Bigram: ", bigramBrownTraining.calBiSentPerplexity(sentences[0]))
     print(t, sentences[0], "-> Under Bigram Smoothing: ",
-          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[0])))
+          bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[0]))
     print()
-    print(t, sentences[1], "-> Under Unigram: ",
-          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[1])))
-    print(t, sentences[1], "-> Under Bigram: ",
-          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[1])))
+    print(t, sentences[1], "-> Under Unigram: ", unigramBrownTraining.calUniSentPerplexity(sentences[1]))
+    print(t, sentences[1], "-> Under Bigram: ", bigramBrownTraining.calBiSentPerplexity(sentences[1]))
     print(t, sentences[1], "-> Under Bigram Smoothing: ",
-          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[1])))
+          bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[1]))
     print()
-    print(t, sentences[2], "-> Under Unigram: ",
-          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[2])))
-    print(t, sentences[2], "-> Under Bigram: ",
-          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[2])))
+    print(t, sentences[2], "-> Under Unigram: ", unigramBrownTraining.calUniSentPerplexity(sentences[2]))
+    print(t, sentences[2], "-> Under Bigram: ", bigramBrownTraining.calBiSentPerplexity(sentences[2]))
     print(t, sentences[2], "-> Under Bigram Smoothing: ",
-          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[2])))
+          bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[2]))
 
 
-def qa7(brownTest, learnerTest, models):
+def qa7(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining, brownTest, learnerTest):
+    print("Ans #7: ")
+    print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'Unigram' model ->",
+          allSentencesPerplexityUnderUnigram
+          (brownTest.replacedLines, unigramBrownTraining, brownTest.replacedTotalToken))
 
-    m = len(brownTest.replacedLines)
-    allSentProbability = testFileProbabilityOfSentences(brownTest.replacedLines, brownTest, models)
-    print(allSentProbability)
-    log = math.log(allSentProbability, 2)
-    l = (1/m)*(log)
-    print(math.pow(2, -l))
+    print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'Unigram' model ->",
+          allSentencesPerplexityUnderUnigram
+          (learnerTest.replacedLines, unigramBrownTraining, learnerTest.replacedTotalToken))
+    print()
 
-    # 0. m, total sentence in the test
-    # 1. get all sentence probability
-    # 2. get the log base 2 of 1
-    # 3. calculate l = 1/m * step 2
-    # 4. 2^-l
+    # print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
+    #       allSentencesPerplexityUnderBigram
+    #       (brownTest.replacedLines, bigramBrownTraining, brownTest.replacedTotalToken))
+    #
+    # print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
+    #       allSentencesPerplexityUnderBigram
+    #       (learnerTest.replacedLines, bigramBrownTraining, learnerTest.replacedTotalToken))
+    # print()
+    #
+    # print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
+    #       allSentencesPerplexityUnderBigramSmoothing
+    #       (brownTest.replacedLines, bigramSmoothingBrownTraining, brownTest.replacedTotalToken))
+    #
+    # print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
+    #       allSentencesPerplexityUnderBigramSmoothing
+    #       (learnerTest.replacedLines, bigramSmoothingBrownTraining, learnerTest.replacedTotalToken))
+    # print()
 
-    # pass
+
+
+
 
