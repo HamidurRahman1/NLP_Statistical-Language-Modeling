@@ -2,6 +2,7 @@
 from Util import getNonMatching
 from Util import makeBigramMap
 from Util import getPercentage
+from Util import testFileProbabilityOfSentences
 
 import math
 
@@ -43,29 +44,43 @@ def qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest):
           "-> tokens % ", getPercentage(t2[1], sum(bigramLearnerTest.values())))
 
 
-def qa5(uni, bi, bis):
+def qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
     s1 = "He was laughed off the screen ."
     s2 = "There was no compulsion behind them ."
     s3 = "I look forward to hearing your reply ."
     print("Ans #5: Log probabilities of below sentences under 3 models.")
 
-    print(t, s1, "-> Under Unigram: ", uni.calUniSentProb(s1))
-    print(t, s1, "-> Under Bigram: ", bi.calBiSentProb(s1))
-    print(t, s1, "-> Under Bigram Smoothing: ", bis.calBisSentProb(s1))
+    print(t, s1, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s1))
+    print(t, s1, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s1))
+    print(t, s1, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s1))
     print()
-    print(t, s2, "-> Under Unigram: ", uni.calUniSentProb(s2))
-    print(t, s2, "-> Under Bigram: ", bi.calBiSentProb(s2))
-    print(t, s2, "-> Under Bigram Smoothing: ", bis.calBisSentProb(s2))
+    print(t, s2, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s2))
+    print(t, s2, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s2))
+    print(t, s2, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s2))
     print()
-    print(t, s3, "-> Under Unigram: ", uni.calUniSentProb(s3))
-    print(t, s3, "-> Under Bigram: ", bi.calBiSentProb(s3))
-    print(t, s3, "-> Under Bigram Smoothing: ", bis.calBisSentProb(s3))
+    print(t, s3, "-> Under Unigram: ", unigramBrownTraining.calUniSentProb(s3))
+    print(t, s3, "-> Under Bigram: ", bigramBrownTraining.calBiSentProb(s3))
+    print(t, s3, "-> Under Bigram Smoothing: ", bigramSmoothingBrownTraining.calBisSentProb(s3))
 
 
 def qa6():
     pass
 
 
-def qa7():
-    pass
+def qa7(brownTest, learnerTest, models):
+
+    m = len(brownTest.replacedLines)
+    allSentProbability = testFileProbabilityOfSentences(brownTest.replacedLines, brownTest, models)
+    print(allSentProbability)
+    log = math.log(allSentProbability, 2)
+    l = (1/m)*(log)
+    print(math.pow(2, -l))
+
+    # 0. m, total sentence in the test
+    # 1. get all sentence probability
+    # 2. get the log base 2 of 1
+    # 3. calculate l = 1/m * step 2
+    # 4. 2^-l
+
+    # pass
 

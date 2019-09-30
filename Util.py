@@ -1,4 +1,5 @@
 
+
 BROWN_TRAINING = "brown-train.txt"
 BROWN_TEST = "brown-test.txt"
 LEARNER_TEST = "learner-test.txt"
@@ -152,3 +153,18 @@ def makeBigramMap(lines):
 def getPercentage(up, bottom):
     return (up/bottom)*100
 
+
+def testFileProbabilityOfSentences(lines, modelObj, models):
+    totalProbability = 1
+    if isinstance(modelObj, models[0]):
+        for line in lines:
+            totalProbability *= modelObj.calUniSentProb(line, True)
+        return totalProbability
+    elif isinstance(modelObj, models[1]):
+        for line in lines:
+            totalProbability *= modelObj.calBiSentProb(line, True)
+        return totalProbability
+    elif isinstance(modelObj, models[2]):
+        for line in lines:
+            totalProbability *= modelObj.calBisSentProb(line, True)
+        return totalProbability

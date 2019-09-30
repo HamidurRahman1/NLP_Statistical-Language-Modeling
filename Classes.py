@@ -15,8 +15,8 @@ from Util import END
 
 
 class PreProcess:
-    """PreProcess a file, pad tags, lower lines, count words, replace (depends on other PreProcess object finally write
-    to a file"""
+    """PreProcess a file, pad tags, lower lines, count words, replace (depends on other PreProcess object)
+    finally write to a file"""
 
     def __init__(self, filename, other=None):
         self.filename = filename
@@ -36,27 +36,37 @@ class PreProcess:
 
 
 class Unigram:
-    """ counting padding and unk as a token and map them to a dictionary keys and have value as their
+    """ counting padding and <unk> as a token and map them to a dictionary keys and have value as their
         probability under this model"""
 
-    def __init__(self, pre):
+    def __init__(self, pre, smoothing=False):
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
         self.ungProbabilityMap = dict()
+        self.smoothing = smoothing
         for token in self.ungTokenMap.keys():
             self.ungProbabilityMap[token] = self.calUngWordProb(token)
 
     def calUngWordProb(self, word):
         """:returns probability of the given word"""
 
-        return self.ungTokenMap.get(word, 0)/self.ungTotalToken
+        if self.smoothing:
+            top = self.ungTokenMap.get(word, 0) + 1
+            bottom = self.ungTotalToken + self.ungUniqueToken
+            return top/bottom
+        else:
+            return self.ungTokenMap.get(word, 0)/self.ungTotalToken
 
-    def calUniSentProb(self, sentence):
+    def calUniSentProb(self, sentence, padded=False):
         """:returns the probability of a given sentence"""
 
         totalProb = 1
-        words = (START + " " + sentence + " " + END).lower().split()
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+
         for word in words:
             wordProb = self.calUngWordProb(word)
             totalProb *= wordProb
@@ -79,9 +89,13 @@ class Bigram(Unigram):
         else:
             return top/bottom
 
-    def calBiSentProb(self, sentence):
+    def calBiSentProb(self, sentence, padded=False):
+
         totalProb = 1
-        words = (START + " " + sentence + " " + END).lower().split()
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
         j = 1
         for i in range(len(words)-1):
             w1 = words[i]
@@ -94,7 +108,7 @@ class Bigram(Unigram):
 
 class BigramSmoothing(Unigram):
     def __init__(self, pre):
-        Unigram.__init__(self, pre)
+        Unigram.__init__(self, pre, True)
         self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
     def calBisWordProb(self, previousWord, word):
@@ -102,9 +116,12 @@ class BigramSmoothing(Unigram):
         bottom = self.ungTokenMap.get(previousWord, 0) + len(self.ungTokenMap)
         return top/bottom
 
-    def calBisSentProb(self, sentence):
+    def calBisSentProb(self, sentence, padded=False):
         prob = 1
-        words = (START + " " + sentence + " " + END).lower().split()
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
         j = 1
         for i in range(len(words)-1):
             w1 = words[i]
