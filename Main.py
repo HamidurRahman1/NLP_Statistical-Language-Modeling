@@ -30,5 +30,15 @@ s1 = "He was laughed off the screen ."
 s2 = "There was no compulsion behind them ."
 s3 = "I look forward to hearing your reply ."
 
+# print(unigramBrownTraining.calUniSentPerplexity(s1))
+# print(unigramBrownTraining.calUniSentPerplexity(s2))
+# print(unigramBrownTraining.calUniSentPerplexity(s3))
 
-qa6([s1, s2, s3], unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
+print(bigramBrownTraining.calBiSentPerplexity(s1))
+
+# qa1(brownTraining)
+# qa2(brownTraining)
+# qa3(brownTraining, brownTest, learnerTest)
+# qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest)
+# qa5([s1, s2, s3], unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)
+# qa6([s1, s2, s3], unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining)

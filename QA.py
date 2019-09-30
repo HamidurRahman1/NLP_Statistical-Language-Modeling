@@ -67,7 +67,6 @@ def qa5(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBro
           returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(sentences[2])))
 
 
-
 def qa6(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
     print("Ans #6: Perplexity of below sentences under 3 models.")
 

@@ -41,6 +41,8 @@ class Unigram:
         probability under this model"""
 
     def __init__(self, pre, smoothing=False):
+        """constructor"""
+
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
@@ -73,9 +75,9 @@ class Unigram:
         return totalProb
 
     def calUniSentPerplexity(self, sentence, padded=False):
-        """:returns the probability of a given sentence"""
+        """:returns the perplexity of a given sentence"""
 
-        totalProb = 1
+        totalProb = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -85,8 +87,10 @@ class Unigram:
             if self.ungTokenMap.get(word, 0) == 0:
                 word = UNK
             wordProb = self.calUngWordProb(word)
-            totalProb += wordProb
-        return totalProb
+            wordLog = math.log(wordProb, 2)
+            totalProb += wordLog
+        p = math.pow(2, -(totalProb / len(words)))
+        return p
 
 
 class Bigram(Unigram):
@@ -127,7 +131,7 @@ class Bigram(Unigram):
 
     def calBiSentPerplexity(self, sentence, padded=False):
 
-        totalProb = 1
+        totalProb = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -142,8 +146,14 @@ class Bigram(Unigram):
                 w2 = UNK
             j += 1
             wordProb = self.calBiWordProb(w1, w2)
-            totalProb += wordProb
-        return totalProb
+            wordLog = 0.0
+            if wordProb == 0.0:
+                wordLog = 0.0
+            else:
+                wordLog = math.log(wordProb, 2)
+            totalProb += wordLog
+        per = math.pow(2, -(totalProb/len(words)))
+        return per
 
 
 class BigramSmoothing(Unigram):
