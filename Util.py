@@ -6,7 +6,7 @@ BROWN_TEST = "brown-test.txt"
 LEARNER_TEST = "learner-test.txt"
 
 # modified file indicator, will prepend with filename above
-MODIFIED = "m-"
+MODIFIED = "modified-"
 
 START = "<s>"
 END = "</s>"
