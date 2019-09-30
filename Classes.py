@@ -72,6 +72,22 @@ class Unigram:
             totalProb *= wordProb
         return totalProb
 
+    def calUniSentPerplexity(self, sentence, padded=False):
+        """:returns the probability of a given sentence"""
+
+        totalProb = 1
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+
+        for word in words:
+            if self.ungTokenMap.get(word, 0) == 0:
+                word = UNK
+            wordProb = self.calUngWordProb(word)
+            totalProb += wordProb
+        return totalProb
+
 
 class Bigram(Unigram):
     """counting padding and unk as a token and map them to a dictionary keys and have value as
@@ -109,6 +125,26 @@ class Bigram(Unigram):
             totalProb *= wordProb
         return totalProb
 
+    def calBiSentPerplexity(self, sentence, padded=False):
+
+        totalProb = 1
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+        j = 1
+        for i in range(len(words)-1):
+            w1 = words[i]
+            w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
+            j += 1
+            wordProb = self.calBiWordProb(w1, w2)
+            totalProb += wordProb
+        return totalProb
+
 
 class BigramSmoothing(Unigram):
     def __init__(self, pre):
@@ -121,6 +157,24 @@ class BigramSmoothing(Unigram):
         return top/bottom
 
     def calBisSentProb(self, sentence, padded=False):
+        prob = 1
+        if padded:
+            words = sentence.split()
+        else:
+            words = (START + " " + sentence + " " + END).lower().split()
+        j = 1
+        for i in range(len(words)-1):
+            w1 = words[i]
+            w2 = words[j]
+            if self.ungTokenMap.get(w1, 0) == 0:
+                w1 = UNK
+            if self.ungTokenMap.get(w2, 0) == 0:
+                w2 = UNK
+            j += 1
+            prob *= self.calBisWordProb(w1, w2)
+        return prob
+
+    def calBisSentPerplexity(self, sentence, padded=False):
         prob = 1
         if padded:
             words = sentence.split()

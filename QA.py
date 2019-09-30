@@ -45,27 +45,52 @@ def qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest):
           "-> tokens % ", getPercentage(t2[1], sum(bigramLearnerTest.values())))
 
 
-def qa5(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
-    s1 = "He was laughed off the screen ."
-    s2 = "There was no compulsion behind them ."
-    s3 = "I look forward to hearing your reply ."
+def qa5(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
     print("Ans #5: Log probabilities of below sentences under 3 models.")
 
-    print(t, s1, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s1)))
-    print(t, s1, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s1)))
-    print(t, s1, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s1)))
+    print(t, sentences[0], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentProb(sentences[0])))
+    print(t, sentences[0], "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(sentences[0])))
+    print(t, sentences[0], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(sentences[0])))
     print()
-    print(t, s2, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s2)))
-    print(t, s2, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s2)))
-    print(t, s2, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s2)))
+    print(t, sentences[1], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentProb(sentences[1])))
+    print(t, sentences[1], "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(sentences[1])))
+    print(t, sentences[1], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(sentences[1])))
     print()
-    print(t, s3, "-> Under Unigram: ", returnLogProbability(unigramBrownTraining.calUniSentProb(s3)))
-    print(t, s3, "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(s3)))
-    print(t, s3, "-> Under Bigram Smoothing: ", returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(s3)))
+    print(t, sentences[2], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentProb(sentences[2])))
+    print(t, sentences[2], "-> Under Bigram: ", returnLogProbability(bigramBrownTraining.calBiSentProb(sentences[2])))
+    print(t, sentences[2], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentProb(sentences[2])))
 
 
-def qa6():
-    pass
+
+def qa6(sentences, unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining):
+    print("Ans #6: Perplexity of below sentences under 3 models.")
+
+    print(t, sentences[0], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[0])))
+    print(t, sentences[0], "-> Under Bigram: ",
+          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[0])))
+    print(t, sentences[0], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[0])))
+    print()
+    print(t, sentences[1], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[1])))
+    print(t, sentences[1], "-> Under Bigram: ",
+          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[1])))
+    print(t, sentences[1], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[1])))
+    print()
+    print(t, sentences[2], "-> Under Unigram: ",
+          returnLogProbability(unigramBrownTraining.calUniSentPerplexity(sentences[2])))
+    print(t, sentences[2], "-> Under Bigram: ",
+          returnLogProbability(bigramBrownTraining.calBiSentPerplexity(sentences[2])))
+    print(t, sentences[2], "-> Under Bigram Smoothing: ",
+          returnLogProbability(bigramSmoothingBrownTraining.calBisSentPerplexity(sentences[2])))
 
 
 def qa7(brownTest, learnerTest, models):
