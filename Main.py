@@ -31,6 +31,7 @@ s1 = "He was laughed off the screen ."
 s2 = "There was no compulsion behind them ."
 s3 = "I look forward to hearing your reply ."
 
+print("random")
 qa1(brownTraining)
 qa2(brownTraining)
 qa3(brownTraining, brownTest, learnerTest)
