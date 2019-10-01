@@ -5,30 +5,31 @@ from Util import getDataFromFile
 from Util import makeBigramMap
 from Util import makeWords
 from Util import countWords
-from Util import replaceAndPaddTest
-from Util import replaceAndPaddTraining
+from Util import replaceTestData
+from Util import replaceTrainingData
 from Util import writeToFile
 
 from Util import MODIFIED
 from Util import START
 from Util import END
 from Util import UNK
+from Util import UNDEFINED
 
 
 class PreProcess:
     """PreProcess a file, pad tags, lower lines, count words, replace (depends on other PreProcess object)
     finally write to a file"""
 
-    def __init__(self, filename, other=None):
+    def __init__(self, filename, otherPreProcess=None):
         self.filename = filename
         self.actualLines = getDataFromFile(self.filename)
         self.actualTokenMap = countWords(makeWords(self.actualLines))
         self.actualTotalToken = sum(self.actualTokenMap.values())
         self.actualUniqueToken = len(self.actualTokenMap.keys())
-        if other is None:
-            self.replacedLines = replaceAndPaddTraining(self.actualLines, self.actualTokenMap)
+        if otherPreProcess is None:
+            self.replacedLines = replaceTrainingData(self.actualLines, self.actualTokenMap)
         else:
-            self.replacedLines = replaceAndPaddTest(self.actualLines, other.replacedTokenMap)
+            self.replacedLines = replaceTestData(self.actualLines, otherPreProcess.replacedTokenMap)
         self.replacedTokenMap = countWords(makeWords(self.replacedLines))
         self.replacedTotalToken = sum(self.replacedTokenMap.values())
         self.replacedUniqueToken = len(self.replacedTokenMap.keys())
@@ -42,13 +43,12 @@ class Unigram:
 
     def __init__(self, pre, smoothing=False):
         """constructor"""
-
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
         self.smoothing = smoothing
 
-    def calUngWordProb(self, word):
+    def calUnigramWordProbability(self, word):
         """:returns probability of the given word"""
 
         if self.smoothing:
@@ -58,10 +58,10 @@ class Unigram:
         else:
             return self.ungTokenMap.get(word, 0)/self.ungTotalToken
 
-    def calUniSentProb(self, sentence, padded=False):
+    def calUnigramSentenceProbability(self, sentence, padded=False):
         """:returns the probability of a given sentence"""
 
-        totalProb = 1
+        totalProbability = 1
         if padded:
             words = sentence.split()
         else:
@@ -70,14 +70,13 @@ class Unigram:
         for word in words:
             if self.ungTokenMap.get(word, 0) == 0:
                 word = UNK
-            wordProb = self.calUngWordProb(word)
-            totalProb *= wordProb
-        return totalProb
+            totalProbability *= self.calUnigramWordProbability(word)
+        return totalProbability
 
-    def calUniSentPerplexity(self, sentence, padded=False):
+    def calUnigramSentencePerplexity(self, sentence, padded=False):
         """:returns the perplexity of a given sentence"""
 
-        totalProb = 0.0
+        totalProbability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -86,16 +85,14 @@ class Unigram:
         for word in words:
             if self.ungTokenMap.get(word, 0) == 0:
                 word = UNK
-            wordProb = self.calUngWordProb(word)
-            wordLog = math.log(wordProb, 2)
-            totalProb += wordLog
-        p = math.pow(2, -(totalProb / len(words)))
-        return p
+            wordProbability = self.calUnigramWordProbability(word)
+            totalProbability += math.log(wordProbability, 2)
+        return math.pow(2, -(totalProbability/len(words)))
 
-    def calUniSentPerplexityTest(self, sentence, padded=False):
+    def calUnigramSentencePerplexityTest(self, sentence, padded=False):
         """:returns the perplexity of a given sentence"""
 
-        totalProb = 0.0
+        totalProbability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -103,10 +100,9 @@ class Unigram:
         for word in words:
             if self.ungTokenMap.get(word, 0) == 0:
                 word = UNK
-            wordProb = self.calUngWordProb(word)
-            wordLog = math.log(wordProb, 2)
-            totalProb += wordLog
-        return totalProb
+            wordProbability = self.calUnigramWordProbability(word)
+            totalProbability += math.log(wordProbability, 2)
+        return totalProbability
 
 
 class Bigram(Unigram):
@@ -117,7 +113,7 @@ class Bigram(Unigram):
         Unigram.__init__(self, pre)
         self.biTokenMap = makeBigramMap(pre.replacedLines)
 
-    def calBiWordProb(self, previousWord, word):
+    def calBigramWordProbability(self, previousWord, word):
         top = self.biTokenMap.get((previousWord, word), 0)
         bottom = self.ungTokenMap.get(previousWord, 0)
         if top == 0 or bottom == 0:
@@ -125,9 +121,9 @@ class Bigram(Unigram):
         else:
             return top/bottom
 
-    def calBiSentProb(self, sentence, padded=False):
+    def calBigramSentenceProbability(self, sentence, padded=False):
 
-        totalProb = 1
+        totalProbability = 1
         if padded:
             words = sentence.split()
         else:
@@ -141,13 +137,13 @@ class Bigram(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            wordProb = self.calBiWordProb(w1, w2)
-            totalProb *= wordProb
-        return totalProb
+            wordProbability = self.calBigramWordProbability(w1, w2)
+            totalProbability *= wordProbability
+        return totalProbability
 
-    def calBiSentPerplexity(self, sentence, padded=False):
+    def calBigramSentencePerplexity(self, sentence, padded=False):
 
-        totalProb = 0.0
+        totalProbability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -161,19 +157,17 @@ class Bigram(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            wordProb = self.calBiWordProb(w1, w2)
-            wordLog = 0.0
-            if wordProb == 0.0:
-                return "undefined"
+            wordProbability = self.calBigramWordProbability(w1, w2)
+            if wordProbability == 0.0:
+                return UNDEFINED
             else:
-                wordLog = math.log(wordProb, 2)
-            totalProb += wordLog
-        per = math.pow(2, -(totalProb/len(words)))
-        return per
+                wordLog = math.log(wordProbability, 2)
+            totalProbability += wordLog
+        return math.pow(2, -(totalProbability/len(words)))
 
-    def calBiSentPerplexityTest(self, sentence, padded=False):
+    def calBigramSentencePerplexityTest(self, sentence, padded=False):
 
-        totalProb = 0.0
+        totalProbability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -187,14 +181,11 @@ class Bigram(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            wordProb = self.calBiWordProb(w1, w2)
-            wordLog = 0.0
-            if wordProb == 0.0:
-                return "undefined"
-            else:
-                wordLog = math.log(wordProb, 2)
-            totalProb += wordLog
-        return totalProb
+            wordProbability = self.calBigramWordProbability(w1, w2)
+            if wordProbability == 0.0:
+                return UNDEFINED
+            totalProbability += math.log(wordProbability, 2)
+        return totalProbability
 
 
 class BigramSmoothing(Unigram):
@@ -202,13 +193,13 @@ class BigramSmoothing(Unigram):
         Unigram.__init__(self, pre)
         self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
-    def calBisWordProb(self, previousWord, word):
+    def calBigramSmoothingWordProbability(self, previousWord, word):
         top = self.bisTokensMap.get((previousWord, word), 0) + 1
         bottom = self.ungTokenMap.get(previousWord, 0) + self.ungUniqueToken
         return top/bottom
 
-    def calBisSentProb(self, sentence, padded=False):
-        prob = 1
+    def calBigramSmoothingSentenceProbability(self, sentence, padded=False):
+        probability = 1
         if padded:
             words = sentence.split()
         else:
@@ -222,11 +213,11 @@ class BigramSmoothing(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            prob *= self.calBisWordProb(w1, w2)
-        return prob
+            probability *= self.calBigramSmoothingWordProbability(w1, w2)
+        return probability
 
-    def calBisSentPerplexity(self, sentence, padded=False):
-        prob = 0.0
+    def calBigramSmoothingSentencePerplexity(self, sentence, padded=False):
+        probability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -240,18 +231,14 @@ class BigramSmoothing(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            wordProb = self.calBisWordProb(w1, w2)
-            wordLog = 0.0
+            wordProb = self.calBigramSmoothingWordProbability(w1, w2)
             if wordProb == 0.0:
-                return "undefined"
-            else:
-                wordLog = math.log(wordProb, 2)
-            prob += wordLog
-        per = math.pow(2, -(prob/len(words)))
-        return per
+                return UNDEFINED
+            probability += math.log(wordProb, 2)
+        return math.pow(2, -(probability/len(words)))
 
-    def calBisSentPerplexityTest(self, sentence, padded=False):
-        prob = 0.0
+    def calBigramSmoothingSentencePerplexityTest(self, sentence, padded=False):
+        probability = 0.0
         if padded:
             words = sentence.split()
         else:
@@ -265,12 +252,9 @@ class BigramSmoothing(Unigram):
             if self.ungTokenMap.get(w2, 0) == 0:
                 w2 = UNK
             j += 1
-            wordProb = self.calBisWordProb(w1, w2)
-            wordLog = 0.0
+            wordProb = self.calBigramSmoothingWordProbability(w1, w2)
             if wordProb == 0.0:
-                return "undefined"
-            else:
-                wordLog = math.log(wordProb, 2)
-            prob += wordLog
-        return prob
+                return UNDEFINED
+            probability += math.log(wordProb, 2)
+        return probability
 

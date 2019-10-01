@@ -11,6 +11,12 @@ START = "<s>"
 END = "</s>"
 UNK = "<unk>"
 
+S1 = "He was laughed off the screen ."
+S2 = "There was no compulsion behind them ."
+S3 = "I look forward to hearing your reply ."
+
+UNDEFINED = "undefined"
+
 
 def getDataFromFile(filePath):
     """:returns a list of all lines from the given file_path"""
@@ -22,25 +28,6 @@ def getDataFromFile(filePath):
         stripped.append(START + " " + line.rstrip().lower() + " " + END)
     file.close()
     return stripped
-
-
-def padLines(lines):
-    """given original lines this function modify those lines by padding them and return given list"""
-    i = 0
-    for line in lines:
-        line = START + " " + line + " " + END
-        lines[i] = line
-        i += 1
-    return lines
-
-
-def lowerAll(lines):
-    """given a list of lines it's lowers all the lines and returns a new list containing those"""
-
-    lowered = list()
-    for line in lines:
-        lowered.append(line.lower())
-    return lowered
 
 
 def makeWords(lines):
@@ -66,57 +53,47 @@ def writeToFile(fileName, lines):
 def countWords(words):
     """:returns a dictionary of each word occurrences from given a list of words"""
 
-    word_freq = dict()
+    wordFreq = dict()
     for word in words:
         try:
-            word_freq[word] += 1
+            wordFreq[word] += 1
         except KeyError:
-            word_freq[word] = 1
-    return word_freq
+            wordFreq[word] = 1
+    return wordFreq
 
 
-def replaceAndPaddTraining(lines, initialMap):
+def replaceTrainingData(lines, initialTrainingMap):
     """given lines and a dictionary, replace all words with
     <unk> if that has occurred only once in the map and returns a new list of lines"""
 
-    padded = list()
+    replacedLines = list()
     for line in lines:
         newLine = ""
         words = line.split()
         for word in words:
-            if initialMap[word] == 1:
+            if initialTrainingMap[word] == 1:
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        padded.append(newLine.rstrip().lstrip())
-    return padded
+        replacedLines.append(newLine.rstrip().lstrip())
+    return replacedLines
 
 
-def replaceAndPaddTest(lines, trainingWordMap):
+def replaceTestData(lines, replacedTrainingMap):
     """givens a dictionary and lines, replace all words with
         <unk> if that did not occur in the map and returns a new list of lines"""
 
-    padded = list()
+    replacedLines = list()
     for line in lines:
         newLine = ""
         words = line.split()
         for word in words:
-            if word not in trainingWordMap.keys():
+            if word not in replacedTrainingMap.keys():
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        padded.append(newLine.lstrip().rstrip())
-    return padded
-
-
-def matched(trainingMap, testMap):
-    """given two dictionary training and test, compare and returns how many keys matched in both dictionary"""
-
-    counter = 0
-    for k in trainingMap.keys():
-        if k in testMap.keys():
-            counter += testMap[k]
-    return counter
+        replacedLines.append(newLine.lstrip().rstrip())
+    return replacedLines
 
 
 def getNonMatching(trainingKeys, testKeys, testMap):
@@ -152,8 +129,92 @@ def makeBigramMap(lines):
 
 
 def getPercentage(top, bottom):
-    """given a fraction it a percentage of that fraction"""
+    """given a fraction it returns a percentage of that fraction"""
     return (top/bottom)*100
+
+
+def returnLogProbability(probability):
+    """given a probability it returns a log of that probability"""
+
+    if probability <= 0.0:
+        return 0.0
+    else:
+        return math.log(probability, 2)
+
+
+def allSentencesPerplexityUnderUnigram(lines, unigram, totalTokens):
+    """given a list of lines, a Unigram model object, and total tokens it returns the
+        total perplexity of the given lines"""
+
+    totalProbability = 0.0
+    for line in lines:
+        sentenceProbability = unigram.calUnigramSentencePerplexityTest(line, True)
+        if undefinedPerplexity(sentenceProbability):
+            return UNDEFINED
+        totalProbability += sentenceProbability
+    return math.pow(2, -(totalProbability/totalTokens))
+
+
+def allSentencesPerplexityUnderBigram(lines, bigram, totalTokens):
+    """given a list of lines, a Bigram model object, and total tokens it returns the
+        total perplexity of the given lines"""
+
+    totalProbability = 0.0
+    for line in lines:
+        sentenceProbability = bigram.calBigramSentencePerplexityTest(line, True)
+        if undefinedPerplexity(sentenceProbability):
+            return UNDEFINED
+        totalProbability += sentenceProbability
+    return math.pow(2, -(totalProbability/totalTokens))
+
+
+def allSentencesPerplexityUnderBigramSmoothing(lines, bigramSmoothing, totalTokens):
+    """given a list of lines, a BigramSmoothing model object, and total tokens it returns the
+        total perplexity of the given lines"""
+
+    totalProbability = 0.0
+    for line in lines:
+        sentenceProbability = bigramSmoothing.calBigramSmoothingSentencePerplexityTest(line, True)
+        if undefinedPerplexity(sentenceProbability):
+            return UNDEFINED
+        totalProbability += sentenceProbability
+    return math.pow(2, -(totalProbability/totalTokens))
+
+
+def undefinedPerplexity(probability):
+    if probability == UNDEFINED:
+        return True
+    else:
+        return False
+
+
+def padLines(lines):
+    """given original lines this function modify those lines by padding them and return given list"""
+    i = 0
+    for line in lines:
+        line = START + " " + line + " " + END
+        lines[i] = line
+        i += 1
+    return lines
+
+
+def matched(trainingMap, testMap):
+    """given two dictionary training and test, compare and returns how many keys matched in both dictionary"""
+
+    counter = 0
+    for k in trainingMap.keys():
+        if k in testMap.keys():
+            counter += testMap[k]
+    return counter
+
+
+def lowerAll(lines):
+    """given a list of lines it's lowers all the lines and returns a new list containing those"""
+
+    lowered = list()
+    for line in lines:
+        lowered.append(line.lower())
+    return lowered
 
 
 def testFileProbabilityOfSentences(lines, modelObj, models):
@@ -170,43 +231,4 @@ def testFileProbabilityOfSentences(lines, modelObj, models):
         for line in lines:
             totalProbability *= modelObj.calBisSentProb(line, True)
         return totalProbability
-
-
-def returnLogProbability(probability):
-    """given a probability it returns a log of that probability"""
-
-    if probability <= 0.0:
-        return 0.0
-    else:
-        return math.log(probability, 2)
-
-
-def allSentencesPerplexityUnderUnigram(lines, unigram, totalTokens):
-    """given a list of lines, unigram model object, and total tokens it returns """
-
-    probTotal = 0.0
-    for line in lines:
-        prob = unigram.calUniSentPerplexityTest(line, True)
-        probTotal += prob
-    return math.pow(2, -(probTotal/totalTokens))
-
-
-def allSentencesPerplexityUnderBigram(lines, bigram, totalTokens):
-    probTotal = 0.0
-    for line in lines:
-        probabi = bigram.calBiSentPerplexityTest(line, True)
-        if probabi == "undefined":
-            return probabi
-        prob = probabi
-        probTotal += prob
-    return math.pow(2, -(probTotal/totalTokens))
-
-
-def allSentencesPerplexityUnderBigramSmoothing(lines, bigramSmoothing, totalTokens):
-    probTotal = 0.0
-    for line in lines:
-        prob = bigramSmoothing.calBisSentPerplexityTest(line, True)
-        probTotal += prob
-    return math.pow(2, -(probTotal/totalTokens))
-
 
