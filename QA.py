@@ -39,11 +39,13 @@ def qa4(bigramBrownTraining, brownTraining, brownTest, learnerTest):
     bigramLearnerTest = makeBigramMap(learnerTest.replacedLines)
 
     t1 = getNonMatching(bigramBrownTraining.biTokenMap.keys(), bigramBrownTest.keys(), bigramBrownTest)
-    print(t, brownTraining.modifiedFilename, "->", brownTest.modifiedFilename, ":", t1, "types % ", getPercentage(t1[0], len(bigramBrownTest)),
+    print(t, brownTraining.modifiedFilename, "->",
+          brownTest.modifiedFilename, ":", t1, "types % ", getPercentage(t1[0], len(bigramBrownTest)),
           "-> tokens % ", getPercentage(t1[1], sum(bigramBrownTest.values())))
 
     t2 = getNonMatching(bigramBrownTraining.biTokenMap.keys(), bigramLearnerTest.keys(), bigramLearnerTest)
-    print(t, brownTraining.modifiedFilename, "->", learnerTest.modifiedFilename, ":", t2, "types % ", getPercentage(t2[0], len(bigramLearnerTest)),
+    print(t, brownTraining.modifiedFilename, "->",
+          learnerTest.modifiedFilename, ":", t2, "types % ", getPercentage(t2[0], len(bigramLearnerTest)),
           "-> tokens % ", getPercentage(t2[1], sum(bigramLearnerTest.values())))
 
 
@@ -93,29 +95,26 @@ def qa7(unigramBrownTraining, bigramBrownTraining, bigramSmoothingBrownTraining,
     print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'Unigram' model ->",
           allSentencesPerplexityUnderUnigram
           (brownTest.replacedLines, unigramBrownTraining, brownTest.replacedTotalToken))
-
     print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'Unigram' model ->",
           allSentencesPerplexityUnderUnigram
           (learnerTest.replacedLines, unigramBrownTraining, learnerTest.replacedTotalToken))
     print()
 
-    # print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
-    #       allSentencesPerplexityUnderBigram
-    #       (brownTest.replacedLines, bigramBrownTraining, brownTest.replacedTotalToken))
-    #
-    # print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
-    #       allSentencesPerplexityUnderBigram
-    #       (learnerTest.replacedLines, bigramBrownTraining, learnerTest.replacedTotalToken))
-    # print()
-    #
-    # print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
-    #       allSentencesPerplexityUnderBigramSmoothing
-    #       (brownTest.replacedLines, bigramSmoothingBrownTraining, brownTest.replacedTotalToken))
-    #
-    # print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
-    #       allSentencesPerplexityUnderBigramSmoothing
-    #       (learnerTest.replacedLines, bigramSmoothingBrownTraining, learnerTest.replacedTotalToken))
-    # print()
+    print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
+          allSentencesPerplexityUnderBigram
+          (brownTest.replacedLines, bigramBrownTraining, brownTest.replacedTotalToken))
+    print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'Bigram' model ->",
+          allSentencesPerplexityUnderBigram
+          (learnerTest.replacedLines, bigramBrownTraining, learnerTest.replacedTotalToken))
+    print()
+
+    print(t, "Perplexity of all '" + str(brownTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
+          allSentencesPerplexityUnderBigramSmoothing
+          (brownTest.replacedLines, bigramSmoothingBrownTraining, brownTest.replacedTotalToken))
+    print(t, "Perplexity of all '" + str(learnerTest.modifiedFilename) + "' sentences under 'BigramSmoothing' model ->",
+          allSentencesPerplexityUnderBigramSmoothing
+          (learnerTest.replacedLines, bigramSmoothingBrownTraining, learnerTest.replacedTotalToken))
+    print()
 
 
 

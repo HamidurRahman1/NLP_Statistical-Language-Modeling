@@ -5,7 +5,6 @@ BROWN_TRAINING = "brown-train.txt"
 BROWN_TEST = "brown-test.txt"
 LEARNER_TEST = "learner-test.txt"
 
-# modified file indicator, will prepend with filename above
 MODIFIED = "modified-"
 
 START = "<s>"
@@ -26,6 +25,7 @@ def getDataFromFile(filePath):
 
 
 def padLines(lines):
+    """given original lines this function modify those lines by padding them and return given list"""
     i = 0
     for line in lines:
         line = START + " " + line + " " + END
@@ -120,8 +120,8 @@ def matched(trainingMap, testMap):
 
 
 def getNonMatching(trainingKeys, testKeys, testMap):
-    """given two key sets training, test and a dictionary, compare and returns how many keys did not match in both
-    and if not matched then sum the value from the given dictionary and returns a tuple of unique keys and total occurrences"""
+    """given two key sets - training, test and a dictionary, compare and returns how many keys did not match in both and
+     if not matched then sum the value from the given dictionary and returns a tuple of unique keys and total occurrences"""
 
     types, tokens = 0, 0
     for k in testKeys:
@@ -151,8 +151,9 @@ def makeBigramMap(lines):
     return biMap
 
 
-def getPercentage(up, bottom):
-    return (up/bottom)*100
+def getPercentage(top, bottom):
+    """given a fraction it a percentage of that fraction"""
+    return (top/bottom)*100
 
 
 def testFileProbabilityOfSentences(lines, modelObj, models):
@@ -172,6 +173,8 @@ def testFileProbabilityOfSentences(lines, modelObj, models):
 
 
 def returnLogProbability(probability):
+    """given a probability it returns a log of that probability"""
+
     if probability <= 0.0:
         return 0.0
     else:
@@ -179,6 +182,8 @@ def returnLogProbability(probability):
 
 
 def allSentencesPerplexityUnderUnigram(lines, unigram, totalTokens):
+    """given a list of lines, unigram model object, and total tokens it returns """
+
     probTotal = 0.0
     for line in lines:
         prob = unigram.calUniSentPerplexityTest(line, True)
@@ -189,7 +194,10 @@ def allSentencesPerplexityUnderUnigram(lines, unigram, totalTokens):
 def allSentencesPerplexityUnderBigram(lines, bigram, totalTokens):
     probTotal = 0.0
     for line in lines:
-        prob = bigram.calBiSentPerplexityTest(line, True)
+        probabi = bigram.calBiSentPerplexityTest(line, True)
+        if probabi == "undefined":
+            return probabi
+        prob = probabi
         probTotal += prob
     return math.pow(2, -(probTotal/totalTokens))
 
@@ -197,7 +205,7 @@ def allSentencesPerplexityUnderBigram(lines, bigram, totalTokens):
 def allSentencesPerplexityUnderBigramSmoothing(lines, bigramSmoothing, totalTokens):
     probTotal = 0.0
     for line in lines:
-        prob = bigramSmoothing.calBiSentPerplexityTest(line, True)
+        prob = bigramSmoothing.calBisSentPerplexityTest(line, True)
         probTotal += prob
     return math.pow(2, -(probTotal/totalTokens))
 
