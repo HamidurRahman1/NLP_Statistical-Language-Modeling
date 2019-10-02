@@ -19,7 +19,7 @@ UNDEFINED = "undefined"
 
 
 def getDataFromFile(filePath):
-    """:returns a list of all lines from the given file_path"""
+    """:returns a list of all lowered, and padded lines from the given filePath. """
 
     file = open(filePath)
     lines = file.readlines()
@@ -62,20 +62,20 @@ def countWords(words):
     return wordFreq
 
 
-def replaceTrainingData(lines, initialTrainingMap):
+def replaceTrainingData(lines, trainingMap):
     """given lines and a dictionary, replace all words with
-    <unk> if that has occurred only once in the map and returns a new list of lines"""
+    <unk> if that has occurred only once in the map and returns a new list of newly mapped <unK> lines"""
 
     replacedLines = list()
     for line in lines:
         newLine = ""
         words = line.split()
         for word in words:
-            if initialTrainingMap[word] == 1:
+            if trainingMap[word] == 1:
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        replacedLines.append(newLine.rstrip().lstrip())
+        replacedLines.append(newLine.rstrip())
     return replacedLines
 
 
@@ -92,13 +92,14 @@ def replaceTestData(lines, replacedTrainingMap):
                 newLine += UNK + " "
             else:
                 newLine += word + " "
-        replacedLines.append(newLine.lstrip().rstrip())
+        replacedLines.append(newLine.rstrip())
     return replacedLines
 
 
 def getNonMatching(trainingKeys, testKeys, testMap):
-    """given two key sets - training, test and a dictionary, compare and returns how many keys did not match in both and
-     if not matched then sum the value from the given dictionary and returns a tuple of unique keys and total occurrences"""
+    """given two key sets - training, test and a dictionary, compare and returns how many keys did
+        not match in both and if not matched then sum the value from the given dictionary and returns
+        a tuple of unique keys and total occurrences"""
 
     types, tokens = 0, 0
     for k in testKeys:
@@ -182,6 +183,8 @@ def allSentencesPerplexityUnderBigramSmoothing(lines, bigramSmoothing, totalToke
 
 
 def undefinedPerplexity(probability):
+    """:returns if the given probability is true towards perplexity counting"""
+
     if probability == UNDEFINED:
         return True
     else:
@@ -190,6 +193,7 @@ def undefinedPerplexity(probability):
 
 def padLines(lines):
     """given original lines this function modify those lines by padding them and return given list"""
+
     i = 0
     for line in lines:
         line = START + " " + line + " " + END

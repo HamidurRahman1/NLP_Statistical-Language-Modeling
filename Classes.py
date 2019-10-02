@@ -42,7 +42,6 @@ class Unigram:
         probability under this model"""
 
     def __init__(self, pre, smoothing=False):
-        """constructor"""
         self.ungTokenMap = pre.replacedTokenMap
         self.ungTotalToken = pre.replacedTotalToken
         self.ungUniqueToken = pre.replacedUniqueToken
@@ -90,7 +89,7 @@ class Unigram:
         return math.pow(2, -(totalProbability/len(words)))
 
     def calUnigramSentencePerplexityTest(self, sentence, padded=False):
-        """:returns the perplexity of a given sentence"""
+        """:returns the probability of a given sentence for perplexity of a test corpora"""
 
         totalProbability = 0.0
         if padded:
@@ -114,6 +113,8 @@ class Bigram(Unigram):
         self.biTokenMap = makeBigramMap(pre.replacedLines)
 
     def calBigramWordProbability(self, previousWord, word):
+        """:returns probability of the given word"""
+
         top = self.biTokenMap.get((previousWord, word), 0)
         bottom = self.ungTokenMap.get(previousWord, 0)
         if top == 0 or bottom == 0:
@@ -122,6 +123,7 @@ class Bigram(Unigram):
             return top/bottom
 
     def calBigramSentenceProbability(self, sentence, padded=False):
+        """:returns probability of the given sentence"""
 
         totalProbability = 1
         if padded:
@@ -142,6 +144,7 @@ class Bigram(Unigram):
         return totalProbability
 
     def calBigramSentencePerplexity(self, sentence, padded=False):
+        """:returns the perplexity of a given sentence"""
 
         totalProbability = 0.0
         if padded:
@@ -166,6 +169,7 @@ class Bigram(Unigram):
         return math.pow(2, -(totalProbability/len(words)))
 
     def calBigramSentencePerplexityTest(self, sentence, padded=False):
+        """:returns the probability of a given sentence for perplexity of a test corpora"""
 
         totalProbability = 0.0
         if padded:
@@ -189,16 +193,23 @@ class Bigram(Unigram):
 
 
 class BigramSmoothing(Unigram):
+    """counting padding and unk as a token and map them to a dictionary keys and have value as
+        their probability under this model"""
+
     def __init__(self, pre):
         Unigram.__init__(self, pre)
         self.bisTokensMap = makeBigramMap(pre.replacedLines)
 
     def calBigramSmoothingWordProbability(self, previousWord, word):
+        """:returns probability of the given word"""
+
         top = self.bisTokensMap.get((previousWord, word), 0) + 1
         bottom = self.ungTokenMap.get(previousWord, 0) + self.ungUniqueToken
         return top/bottom
 
     def calBigramSmoothingSentenceProbability(self, sentence, padded=False):
+        """:returns probability of the given sentence"""
+
         probability = 1
         if padded:
             words = sentence.split()
@@ -217,6 +228,8 @@ class BigramSmoothing(Unigram):
         return probability
 
     def calBigramSmoothingSentencePerplexity(self, sentence, padded=False):
+        """:returns the perplexity of a given sentence"""
+
         probability = 0.0
         if padded:
             words = sentence.split()
@@ -238,6 +251,8 @@ class BigramSmoothing(Unigram):
         return math.pow(2, -(probability/len(words)))
 
     def calBigramSmoothingSentencePerplexityTest(self, sentence, padded=False):
+        """:returns the probability of a given sentence for perplexity of a test corpora"""
+
         probability = 0.0
         if padded:
             words = sentence.split()
