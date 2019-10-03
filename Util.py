@@ -138,7 +138,7 @@ def returnLogProbability(probability):
     """given a probability it returns a log of that probability"""
 
     if probability <= 0.0:
-        return 0.0
+        return UNDEFINED
     else:
         return math.log(probability, 2)
 
