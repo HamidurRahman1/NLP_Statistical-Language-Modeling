@@ -1,9 +1,19 @@
 
-<strong>How to run: </strong><br>
+<strong><u>What it is: </u></strong><br>
+<pre>A language model based on statistics learns the likelihood of word event dependent on instances of content. More
+straightforward models may take a gander at a setting of a short grouping of words, while bigger models may work at the
+degree of sentences or sections. Most ordinarily, language models work at the degree of words.</pre>
+
+<strong><u>Models: </u></strong><br>
+<li>Unigram</li>
+<li>Bigram</li>
+<li>Bigram with Add-One smoothing</li>
+
+<strong><u>How to run: </u></strong><br>
 <pre>Just run the 'Main.py' file. It will do it's job and create answer for all questions in order.
 Answers are EXPLICITLY marked as there are functions defined for each of them.</pre>
 
-<strong>Design and Explanation:</strong>
+<strong><u>Design and Explanation:</u></strong>
 <pre>Followed an OOP approach. PreProcess as an example does same pre-processing for TRAINING data and
 TEST data. At some point pre-processing TEST data depends on pre-processed TRAINING data that's why
 PreProcess takes optionally a pre-processed TRAINING object and do it's comparing.
